@@ -28,9 +28,18 @@ const app         = express();
 const PORT        = process.env.PORT || 4000;
 const JWT_SECRET  = process.env.JWT_SECRET;
 const PYTHON_CMD  = process.env.PYTHON_CMD || 'python3';
-const FRONTEND_URL= process.env.FRONTEND_URL;
 const groqClient  = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const FRONTEND_URL = process.env.FRONTEND_URL || '*';
+app.use(cors({
+  origin: FRONTEND_URL,
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
+  credentials: true
+}));
 
+// ── Core middleware ─────────────────────────────────────────────────────
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 // ── Data Directories & File Map ───────────────────────────────────────────────
 const DATA_DIR          = path.join(__dirname, 'data');
 const FRONTEND_DATA_DIR = path.join(__dirname, '..', 'frontend', 'public', 'data');
