@@ -1,90 +1,96 @@
-import React, { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { motion } from "framer-motion"
-import Footer from "@/components/common/Footer"
+// src/pages/Landing.tsx
+
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import Footer from "@/components/common/Footer";
 import {
   ArrowRight,
   Users,
   Utensils,
   Heart,
   TrendingUp
-} from "lucide-react"
+} from "lucide-react";
+
+// Use your Render backend by default, overridable via VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL
+  || "https://deployment-b.onrender.com/api/v1";
 
 const Landing: React.FC = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [statsData, setStatsData] = useState<{
-    ngos: number
-    restaurants: number
-    mealsDonated: number
-    foodSaved: number
+    ngos: number;
+    restaurants: number;
+    mealsDonated: number;
+    foodSaved: number;
   }>({
     ngos: 0,
     restaurants: 0,
     mealsDonated: 0,
-    foodSaved: 0
-  })
+    foodSaved: 0,
+  });
 
   useEffect(() => {
-    fetch("/api/stats/users")
+    fetch(`${API_URL}/stats/users`)
       .then((res) => res.json())
       .then((data) => setStatsData(data))
-      .catch(() => {})
-  }, [])
+      .catch(() => {
+        // silent fail
+      });
+  }, []);
 
   const stats = [
     {
       label: "Meals Donated",
       value: statsData.mealsDonated.toLocaleString(),
       Icon: Utensils,
-      color: "text-green-600"
+      color: "text-green-600",
     },
     {
       label: "Food Saved (lbs)",
       value: statsData.foodSaved.toLocaleString(),
       Icon: Heart,
-      color: "text-orange-600"
+      color: "text-orange-600",
     },
     {
       label: "Active NGOs",
       value: statsData.ngos.toLocaleString(),
       Icon: Users,
-      color: "text-blue-600"
+      color: "text-blue-600",
     },
     {
       label: "Active Restaurants",
       value: statsData.restaurants.toLocaleString(),
       Icon: TrendingUp,
-      color: "text-purple-600"
+      color: "text-purple-600",
     }
-  ] as const
+  ] as const;
 
   const steps = [
     {
       title: "Restaurants Offer Food",
-      description:
-        "Local restaurants post available surplus food with pickup details",
+      description: "Local restaurants post available surplus food with pickup details",
       Icon: Utensils,
       color: "bg-orange-100 text-orange-600"
     },
     {
       title: "NGOs Request Pickup",
-      description:
-        "Verified NGOs browse and request food items for their communities",
+      description: "Verified NGOs browse and request food items for their communities",
       Icon: Users,
       color: "bg-green-100 text-green-600"
     },
     {
       title: "Food Reaches Communities",
-      description:
-        "Coordinated pickup and distribution ensures food reaches those in need",
+      description: "Coordinated pickup and distribution ensures food reaches those in need",
       Icon: Heart,
       color: "bg-red-100 text-red-600"
     }
-  ] as const
+  ] as const;
 
   return (
     <div className="min-h-screen">
       <section className="pb-20 pt-16">
+        {/* Hero */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <motion.h1
@@ -98,6 +104,7 @@ const Landing: React.FC = () => {
                 Not Landfills
               </span>
             </motion.h1>
+
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -108,6 +115,7 @@ const Landing: React.FC = () => {
               serving communities, reducing waste while fighting hunger through
               intelligent coordination.
             </motion.p>
+
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -126,12 +134,14 @@ const Landing: React.FC = () => {
                   Restaurant
                 </span>
               </motion.div>
+
               <motion.div
                 animate={{ x: [0, 10, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               >
                 <ArrowRight className="h-8 w-8 text-green-600" />
               </motion.div>
+
               <motion.div
                 animate={{ y: [5, -5, 5] }}
                 transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
@@ -144,12 +154,14 @@ const Landing: React.FC = () => {
                   NGO
                 </span>
               </motion.div>
+
               <motion.div
                 animate={{ x: [0, 10, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity, delay: 0.5 }}
               >
                 <ArrowRight className="h-8 w-8 text-green-600" />
               </motion.div>
+
               <motion.div
                 animate={{ y: [-5, 5, -5] }}
                 transition={{ duration: 2, repeat: Infinity, delay: 1 }}
@@ -163,6 +175,7 @@ const Landing: React.FC = () => {
                 </span>
               </motion.div>
             </motion.div>
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -177,6 +190,7 @@ const Landing: React.FC = () => {
               >
                 Sign in as NGO
               </motion.button>
+
               <motion.button
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
@@ -190,6 +204,7 @@ const Landing: React.FC = () => {
         </div>
       </section>
 
+      {/* Stats Section */}
       <section className="bg-white/50 py-16 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -207,6 +222,7 @@ const Landing: React.FC = () => {
               hunger
             </p>
           </motion.div>
+
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map(({ label, value, Icon, color }, i) => (
               <motion.div
@@ -239,6 +255,7 @@ const Landing: React.FC = () => {
         </div>
       </section>
 
+      {/* How It Works */}
       <section className="py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -256,6 +273,7 @@ const Landing: React.FC = () => {
               in need
             </p>
           </motion.div>
+
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {steps.map(({ title, description, Icon, color }, i) => (
               <motion.div
@@ -267,18 +285,12 @@ const Landing: React.FC = () => {
                 className="relative"
               >
                 <div className="h-full rounded-xl border border-gray-100 bg-white p-8 shadow-lg">
-                  <div
-                    className={`mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full ${color}`}
-                  >
+                  <div className={`mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full ${color}`}>
                     <Icon className="h-8 w-8" />
                   </div>
                   <div className="text-center">
-                    <h3 className="mb-4 text-xl font-bold text-gray-900">
-                      {title}
-                    </h3>
-                    <p className="leading-relaxed text-gray-600">
-                      {description}
-                    </p>
+                    <h3 className="mb-4 text-xl font-bold text-gray-900">{title}</h3>
+                    <p className="leading-relaxed text-gray-600">{description}</p>
                   </div>
                   <div className="absolute -right-4 -top-4 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-green-600 to-orange-600 text-sm font-bold text-white">
                     {i + 1}
@@ -297,7 +309,7 @@ const Landing: React.FC = () => {
 
       {/* <Footer /> */}
     </div>
-  )
-}
+  );
+};
 
-export default Landing
+export default Landing;

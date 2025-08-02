@@ -1,3 +1,5 @@
+// frontend/src/components/restaurant/dashboard/PredictionSection.tsx
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -13,6 +15,11 @@ interface RawPredictions {
   bestAction: { dish: string; value: number };
 }
 
+// ← Add this constant at the top:
+const API_BASE =
+  import.meta.env.VITE_API_URL /* e.g. "https://deployment-v0fc.onrender.com" */ ??
+  "https://deployment-v0fc.onrender.com";
+
 const PredictionSection: React.FC = () => {
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,13 +29,13 @@ const PredictionSection: React.FC = () => {
       try {
         // 1) Load your static bandit summary (no auth needed)
         const { data: summary } = await axios.get<RawPredictions>(
-          "/data/predicted.json"
+          `${API_BASE}/data/predicted.json`
         );
 
-        // 2) Load today's actual servings (requires auth header if you have one globally set)
+        // 2) Load today's actual servings (requires auth header if set globally)
         const { data: servings } = await axios.get<
           { name: string; totalEarning: number }[]
-        >("/api/servings");
+        >(`${API_BASE}/api/servings`);
 
         // Build an actual‐earnings map
         const actualMap: Record<string, number> = {};
@@ -37,7 +44,8 @@ const PredictionSection: React.FC = () => {
         });
 
         // Total selection count → for confidence
-        const totalCount = summary.counts.reduce((sum, c) => sum + c, 0) || 1;
+        const totalCount =
+          summary.counts.reduce((sum, c) => sum + c, 0) || 1;
 
         // 3) Map into your Prediction interface
         const list: Prediction[] = summary.dishes.map((dish, i) => {

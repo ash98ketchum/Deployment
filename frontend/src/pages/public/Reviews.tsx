@@ -1,3 +1,5 @@
+// frontend/src/pages/Reviews.tsx
+
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -9,6 +11,11 @@ import {
   ThumbsUp,
   Filter,
 } from "lucide-react";
+
+// ← Add this at the top:
+const API_BASE =
+  import.meta.env.VITE_API_URL /* e.g. "https://deployment-v0fc.onrender.com" */ ??
+  "https://deployment-v0fc.onrender.com";
 
 /* ------------------------------------------------------------------ */
 /*                                Types                               */
@@ -27,7 +34,6 @@ interface Review {
   verified: boolean;
 }
 
-
 /* ------------------------------------------------------------------ */
 /*                                Page                                */
 /* ------------------------------------------------------------------ */
@@ -40,7 +46,7 @@ const Reviews: React.FC = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await fetch("/api/reviews");
+        const res = await fetch(`${API_BASE}/api/reviews`);
         const data = await res.json();
         setReviews(data);
       } catch (error) {
@@ -157,16 +163,16 @@ const Reviews: React.FC = () => {
           <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
             {/* Reviewer Type */}
             <div className="flex items-center space-x-4">
-              {/* <Filter className="h-5 w-5 text-gray-500" /> */}
               <div className="flex space-x-2">
                 {[
                   { value: "all", label: "All Reviews" },
-                  // { value: "ngo", label: "NGO Reviews" },
-                  // { value: "restaurant", label: "Restaurant Reviews" },
                 ].map(({ value, label }) => (
                   <button
                     key={value}
-                   onClick={() => setRating(null)}
+                    onClick={() => {
+                      setFilter(value as "all" | "ngo" | "restaurant");
+                      setRating(null);
+                    }}
                     className={`rounded-lg px-4 py-2 font-medium transition-colors duration-200 ${
                       filter === value
                         ? "bg-green-600 text-white"
@@ -221,7 +227,7 @@ const Reviews: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}              
                 className="rounded-xl border border-gray-100 bg-white p-6 shadow-lg transition-shadow duration-300 hover:shadow-xl"
               >
                 <div className="flex items-start space-x-4">

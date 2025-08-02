@@ -19,16 +19,21 @@ interface EventsListProps {
   className?: string;
 }
 
+// ← Add this at the top:
+const API_BASE =
+  import.meta.env.VITE_API_URL /* e.g. "https://deployment-v0fc.onrender.com" */ ||
+  "https://deployment-v0fc.onrender.com";
+
 const EventsList: React.FC<EventsListProps> = ({ className = "" }) => {
   // 1) Local state for events, loading, and error
   const [events, setEvents] = useState<EventItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // 2) Fetch events when component mounts
   useEffect(() => {
     axios
-      .get<EventItem[]>("/api/events")
+      .get<EventItem[]>(`${API_BASE}/api/events`)
       .then((res) => {
         setEvents(res.data);
       })
@@ -43,10 +48,10 @@ const EventsList: React.FC<EventsListProps> = ({ className = "" }) => {
 
   // 3) Helper to render time until/since event
   const renderStatus = (evtDate: string) => {
-    const now  = Date.now();
+    const now = Date.now();
     const diff = new Date(evtDate).getTime() - now;
     if (diff < 0) return "Past";
-    const days  = Math.floor(diff / 86400000);
+    const days = Math.floor(diff / 86400000);
     const hours = Math.floor((diff % 86400000) / 3600000);
     return days > 0 ? `${days}d ${hours}h` : `${hours}h`;
   };

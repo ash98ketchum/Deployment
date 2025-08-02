@@ -1,5 +1,7 @@
 // src/pages/restaurant/Settings.tsx
 
+"use client";
+
 import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
@@ -8,6 +10,11 @@ import { Bell, BarChart3 } from "lucide-react";
 import RestaurantLayout from "@/layouts/RestaurantLayout";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+
+// ← Add this at the top:
+const API_BASE =
+  import.meta.env.VITE_API_URL /* e.g. "https://deployment-v0fc.onrender.com" */ ||
+  "https://deployment-v0fc.onrender.com";
 
 interface SettingSectionProps {
   title: string;
@@ -102,16 +109,14 @@ const Settings: React.FC = () => {
     setIsRecalibrating(true);
 
     try {
-      // use the correct endpoint and send your auth header
+      // ← Use the API_BASE constant here:
       const res = await axios.post(
-        "/api/model/recalibrate",
+        `${API_BASE}/api/model/recalibrate`,
         {},
         authHeader()
       );
 
-      alert(
-        res.data.message || "Model recalibrated successfully!"
-      );
+      alert(res.data.message || "Model recalibrated successfully!");
     } catch (err: any) {
       console.error("Recalibrate failed:", err);
       alert(

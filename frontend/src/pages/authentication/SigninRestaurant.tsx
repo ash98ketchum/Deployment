@@ -1,5 +1,3 @@
-// src/pages/signin/SigninRestaurant.tsx
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
@@ -7,20 +5,26 @@ import { ChefHat } from "lucide-react";
 import { motion } from "framer-motion";
 import FloatingFoodIcons from "@/components/common/FloatingFoodIcons";
 
+// points to your Render service by default, overrideable via VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL
+  || 'https://deployment-b.onrender.com/api/v1';
+
 const SigninRestaurant: React.FC = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error,    setError]    = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
     try {
-      const response = await axios.post(
-        'http://localhost:4000/api/v1/auth/login',
+      const { data } = await axios.post(
+        `${API_URL}/auth/login`,
         { email, password }
       );
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('token', data.token);
       navigate('/restaurant');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Login failed');
@@ -54,10 +58,10 @@ const SigninRestaurant: React.FC = () => {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
               placeholder="owner@smartmeal.ai"
+              className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
             />
           </div>
 
@@ -68,10 +72,10 @@ const SigninRestaurant: React.FC = () => {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
               placeholder="••••••••"
+              className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
             />
           </div>
 
@@ -85,7 +89,7 @@ const SigninRestaurant: React.FC = () => {
             type="submit"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full py-3 rounded-xl text-orange-600 text-white font-semibold tracking-wide uppercase shadow-md hover: bg-orange-600 transition"
+            className="w-full py-3 rounded-xl bg-orange-600 text-white font-semibold uppercase shadow-md hover:bg-orange-700 transition"
           >
             Sign In
           </motion.button>

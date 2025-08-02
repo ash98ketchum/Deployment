@@ -20,13 +20,18 @@ interface DishPrediction {
   isBest: boolean;
 }
 
+// ← Add this constant at the top:
+const API_BASE =
+  import.meta.env.VITE_API_URL /* e.g. "https://deployment-v0fc.onrender.com" */ ||
+  "https://deployment-v0fc.onrender.com";
+
 const History = () => {
   const [predictions, setPredictions] = useState<DishPrediction[]>([]);
 
   useEffect(() => {
     const fetchPredictions = async () => {
       try {
-        const res = await fetch("http://localhost:4000/api/predictions");
+        const res = await fetch(`${API_BASE}/api/predictions`);
         const data: DishPrediction[] = await res.json();
         setPredictions(data);
       } catch (err) {
@@ -37,18 +42,18 @@ const History = () => {
   }, []);
 
   if (predictions.length === 0) {
-    return <div className="text-center py-10 text-gray-500">Loading predictions...</div>;
+    return (
+      <div className="text-center py-10 text-gray-500">
+        Loading predictions...
+      </div>
+    );
   }
 
   return (
     <div className="px-6 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Prediction History</h1>
-
-      {/* Hardcoded Date Group (you can fetch it dynamically too) */}
-      {/* <div className="text-sm text-gray-500 flex items-center gap-2 mb-4">
-        <CalendarDays size={16} />
-        Thursday, May 29, 2025
-      </div> */}
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">
+        Prediction History
+      </h1>
 
       <div className="space-y-4">
         {predictions.map((pred) => (
@@ -64,7 +69,9 @@ const History = () => {
                 className="w-12 h-12 rounded-full object-cover border"
               />
               <div>
-                <h3 className="text-base font-semibold text-gray-800">{pred.dishName}</h3>
+                <h3 className="text-base font-semibold text-gray-800">
+                  {pred.dishName}
+                </h3>
                 <p className="text-xs text-gray-500">
                   {pred.count} selections · ${pred.qValue.toFixed(2)} saved
                 </p>
@@ -75,7 +82,9 @@ const History = () => {
               <p className="text-green-700 font-medium">
                 Predicted: ${pred.qValue.toFixed(2)}
               </p>
-              <p className="text-gray-500 text-xs">Actual: ${Math.random().toFixed(2)}</p>
+              <p className="text-gray-500 text-xs">
+                Actual: ${Math.random().toFixed(2)}
+              </p>
               {pred.isBest && (
                 <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">
                   Best Action

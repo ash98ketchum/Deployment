@@ -1,3 +1,5 @@
+// src/pages/restaurant/FoodUpload.tsx
+
 import React, { useState } from 'react';
 import { Upload, Camera } from 'lucide-react';
 
@@ -12,6 +14,11 @@ interface FoodUploadForm {
   image: string;
   expiryTime: string;
 }
+
+// ← Add this at the top:
+const API_BASE =
+  import.meta.env.VITE_API_URL /* e.g. "https://deployment-v0fc.onrender.com" */ ||
+  "https://deployment-v0fc.onrender.com";
 
 export default function RestaurantUpload() {
   const [form, setForm] = useState<FoodUploadForm>({
@@ -63,7 +70,7 @@ export default function RestaurantUpload() {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/food', {
+      const res = await fetch(`${API_BASE}/api/food`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -105,6 +112,7 @@ export default function RestaurantUpload() {
       </div>
       <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Image Upload */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Food Image</label>
             <div className="flex items-center justify-center w-full">
@@ -123,6 +131,7 @@ export default function RestaurantUpload() {
             </div>
           </div>
 
+          {/* Name & Quantity */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Food Name *</label>
@@ -148,6 +157,7 @@ export default function RestaurantUpload() {
             </div>
           </div>
 
+          {/* Description */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
             <textarea
@@ -159,6 +169,7 @@ export default function RestaurantUpload() {
             />
           </div>
 
+          {/* Times & Value */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Pickup Start Time *</label>
@@ -192,6 +203,7 @@ export default function RestaurantUpload() {
             </div>
           </div>
 
+          {/* Dietary Tags */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Dietary Tags</label>
             <div className="flex flex-wrap gap-2">
@@ -212,6 +224,7 @@ export default function RestaurantUpload() {
             </div>
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             disabled={isSubmitting}

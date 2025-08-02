@@ -7,6 +7,11 @@ import { Trash2 } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 
+// ← Add this at the top:
+const API_BASE =
+  import.meta.env.VITE_API_URL /* e.g. "https://deployment-v0fc.onrender.com" */ ||
+  "https://deployment-v0fc.onrender.com";
+
 interface EventItem {
   id: string;
   title: string;
@@ -19,7 +24,7 @@ const Events: React.FC = () => {
   const [form, setForm] = useState<Partial<EventItem>>({
     title: "",
     description: "",
-    date: ""
+    date: "",
   });
 
   useEffect(() => {
@@ -28,7 +33,7 @@ const Events: React.FC = () => {
 
   const fetchEvents = async () => {
     try {
-      const res = await axios.get<EventItem[]>("/api/events");
+      const res = await axios.get<EventItem[]>(`${API_BASE}/api/events`);
       if (Array.isArray(res.data)) {
         setEvents(res.data);
       } else {
@@ -45,7 +50,7 @@ const Events: React.FC = () => {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const addEvent = async () => {
@@ -58,11 +63,11 @@ const Events: React.FC = () => {
       id: Date.now().toString(),
       title: form.title!,
       description: form.description || "",
-      date: form.date!
+      date: form.date!,
     };
 
     try {
-      await axios.post("/api/events", newEvt);
+      await axios.post(`${API_BASE}/api/events`, newEvt);
       setForm({ title: "", description: "", date: "" });
       fetchEvents();
     } catch (err) {
@@ -74,7 +79,9 @@ const Events: React.FC = () => {
   const deleteEvent = async (id: string) => {
     if (!window.confirm("Delete this event?")) return;
     try {
-      await axios.delete(`/api/events/${encodeURIComponent(id)}`);
+      await axios.delete(
+        `${API_BASE}/api/events/${encodeURIComponent(id)}`
+      );
       fetchEvents();
     } catch (err) {
       console.error("Failed to delete event", err);
@@ -82,7 +89,6 @@ const Events: React.FC = () => {
     }
   };
 
-  // guarantee an array for rendering
   const list = Array.isArray(events) ? events : [];
 
   return (
@@ -137,8 +143,12 @@ const Events: React.FC = () => {
         <p className="text-gray-500">No events to show.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {list.map(evt => (
-            <Card key={evt.id} className="relative p-6 bg-gray-100" glow={false}>
+          {list.map((evt) => (
+            <Card
+              key={evt.id}
+              className="relative p-6 bg-gray-100"
+              glow={false}
+            >
               <button
                 onClick={() => deleteEvent(evt.id)}
                 className="absolute top-4 right-4 text-red-500 hover:text-red-700"
@@ -156,7 +166,7 @@ const Events: React.FC = () => {
                 {new Date(evt.date).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "short",
-                  day: "numeric"
+                  day: "numeric",
                 })}
               </p>
             </Card>

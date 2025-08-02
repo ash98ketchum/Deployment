@@ -14,6 +14,11 @@ import axios from "axios";
 import Card from "@/components/ui/Card";
 import GlowingText from "@/components/ui/GlowingText";
 
+// ← Add this at the top:
+const API_BASE =
+  import.meta.env.VITE_API_URL /* e.g. "https://deployment-v0fc.onrender.com" */ ||
+  "https://deployment-v0fc.onrender.com";
+
 // This shape matches what the backend writes to predicted.json
 interface PredictedSummary {
   trainedAt: string;
@@ -63,7 +68,7 @@ const createMetrics = (summary: PredictedSummary): Metric[] => {
       id: "bestValue",
       name: `Best Dish: ${best}`,
       Icon: TrendingUp,
-      value: parseFloat(Math.max(...qArray || [0]).toFixed(2)),
+      value: parseFloat(Math.max(...(qArray.length ? qArray : [0])).toFixed(2)),
       unit: "",
     },
     {
@@ -91,7 +96,7 @@ const MetricCard: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get<PredictedSummary>("/api/model/summary", authHeader())
+      .get<PredictedSummary>(`${API_BASE}/api/model/summary`, authHeader())
       .then((res) => {
         setMetrics(createMetrics(res.data));
       })

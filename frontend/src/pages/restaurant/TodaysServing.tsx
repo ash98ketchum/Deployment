@@ -28,6 +28,11 @@ interface FormState {
   remark: string;
 }
 
+// ← Add this at the top:
+const API_BASE =
+  import.meta.env.VITE_API_URL /* e.g. "https://deployment-v0fc.onrender.com" */ ||
+  "https://deployment-v0fc.onrender.com";
+
 const commonDishes = [
   "Paneer Butter Masala", "Chole Bhature", "Masala Dosa", "Biryani",
   "Rajma Chawal", "Aloo Paratha", "Butter Chicken", "Dal Makhani",
@@ -57,7 +62,7 @@ const TodaysServing: React.FC = () => {
 
   const fetchServings = async () => {
     try {
-      const res = await axios.get<Serving[]>("/api/servings");
+      const res = await axios.get<Serving[]>(`${API_BASE}/api/servings`);
       setServings(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error("Fetch servings failed:", err);
@@ -109,7 +114,7 @@ const TodaysServing: React.FC = () => {
     });
 
     try {
-      await axios.post("/api/servings", payload);
+      await axios.post(`${API_BASE}/api/servings`, payload);
       fetchServings();
     } catch (err) {
       console.error("Could not save to server:", err);
@@ -119,8 +124,9 @@ const TodaysServing: React.FC = () => {
 
   const removeServing = async (id: string) => {
     try {
-      console.log("Deleting serving id:", id);
-      await axios.delete(`/api/servings/${encodeURIComponent(id)}`);
+      await axios.delete(
+        `${API_BASE}/api/servings/${encodeURIComponent(id)}`
+      );
       fetchServings();
     } catch (err) {
       console.error("Remove serving failed:", err);
@@ -131,7 +137,7 @@ const TodaysServing: React.FC = () => {
   const archiveForModel = async () => {
     if (!window.confirm("Archive today’s data for model training?")) return;
     try {
-      await axios.post("/api/archive");
+      await axios.post(`${API_BASE}/api/archive`);
       alert("Archived!");
     } catch {
       alert("Archive failed.");
@@ -239,11 +245,11 @@ const TodaysServing: React.FC = () => {
           )}
 
           {[
-            { label: "Cost Per Servings ($)",       name: "costPerPlate",         type: "number", placeholder: "0.00" },
+            { label: "Cost Per Serving ($)", name: "costPerPlate",         type: "number", placeholder: "0.00" },
             { label: "Total Ingredients Cost ($)", name: "totalIngredientsCost", type: "number", placeholder: "0.00" },
-            { label: "Total Serving",              name: "totalPlates",          type: "number", placeholder: "0" },
-            { label: "Plates Wasted",             name: "platesWasted",         type: "number", placeholder: "0" },
-            { label: "Remark",                    name: "remark",               type: "text",   placeholder: "Optional remark" },
+            { label: "Total Servings",        name: "totalPlates",          type: "number", placeholder: "0" },
+            { label: "Plates Wasted",         name: "platesWasted",         type: "number", placeholder: "0" },
+            { label: "Remark",                name: "remark",               type: "text",   placeholder: "Optional remark" },
           ].map(({ label, name, type, placeholder }) => (
             <div key={name}>
               <label className="block mb-1 text-gray-700">{label}</label>

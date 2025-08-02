@@ -24,6 +24,11 @@ interface SeriesPoint {
   predictedEarning: number;
 }
 
+// ← Add this at the top:
+const API_BASE =
+  import.meta.env.VITE_API_URL /* e.g. "https://deployment-v0fc.onrender.com" */
+  || "https://deployment-v0fc.onrender.com";
+
 const ChartSection: React.FC<{ className?: string }> = ({
   className = "",
 }) => {
@@ -49,13 +54,22 @@ const ChartSection: React.FC<{ className?: string }> = ({
         // 1) actual series
         const actualRes = await axios.get<
           Pick<SeriesPoint, "date" | "actual" | "actualEarning">[]
-        >(`/api/dataformodel/${viewMode}`, authHeader());
+        >(
+          `${API_BASE}/api/dataformodel/${viewMode}`,
+          authHeader()
+        );
 
         // 2) predicted series + ε
         const predRes = await axios.get<{
           epsilon: number;
-          series: Pick<SeriesPoint, "date" | "predicted" | "predictedEarning">[];
-        }>(`/api/predicted/${viewMode}`, authHeader());
+          series: Pick<
+            SeriesPoint,
+            "date" | "predicted" | "predictedEarning"
+          >[];
+        }>(
+          `${API_BASE}/api/predicted/${viewMode}`,
+          authHeader()
+        );
 
         setEpsilon(predRes.data.epsilon);
 
@@ -92,7 +106,10 @@ const ChartSection: React.FC<{ className?: string }> = ({
         // 3) overlay today's live servings
         const todayRes = await axios.get<
           { totalPlates: number; totalEarning: number }[]
-        >("/api/servings", authHeader());
+        >(
+          `${API_BASE}/api/servings`,
+          authHeader()
+        );
         const today = new Date().toISOString().split("T")[0];
         const sumServings = todayRes.data.reduce(
           (sum, s) => sum + (s.totalPlates || 0),
@@ -152,15 +169,11 @@ const ChartSection: React.FC<{ className?: string }> = ({
   };
 
   if (loading) {
-    return (
-      <div className="py-8 text-center text-gray-500">Loading chart…</div>
-    );
+    return <div className="py-8 text-center text-gray-500">Loading chart…</div>;
   }
 
   if (error) {
-    return (
-      <div className="py-8 text-center text-red-500">{error}</div>
-    );
+    return <div className="py-8 text-center text-red-500">{error}</div>;
   }
 
   return (
@@ -203,10 +216,18 @@ const ChartSection: React.FC<{ className?: string }> = ({
           <ResponsiveContainer>
             <LineChart data={data}>
               <CartesianGrid stroke="#E5E7EB" strokeDasharray="3 3" />
-              <XAxis dataKey="date" stroke="#D1D5DB" tick={{ fill: "#6B7280" }} />
+              <XAxis
+                dataKey="date"
+                stroke="#D1D5DB"
+                tick={{ fill: "#6B7280" }}
+              />
               <YAxis stroke="#D1D5DB" tick={{ fill: "#6B7280" }} />
               <Tooltip content={<CustomTooltip />} />
-              <Legend formatter={(v) => <span className="text-gray-600">{v}</span>} />
+              <Legend
+                formatter={(v) => (
+                  <span className="text-gray-600">{v}</span>
+                )}
+              />
 
               <Line
                 dataKey="predicted"

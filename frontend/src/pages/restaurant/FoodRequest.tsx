@@ -28,14 +28,19 @@ export interface FoodRequest {
   pickupTime?: string;
 }
 
+// ← Add this at the top:
+const API_BASE =
+  import.meta.env.VITE_API_URL /* e.g. "https://deployment-v0fc.onrender.com" */ ||
+  "https://deployment-v0fc.onrender.com";
+
 export default function FoodRequest() {
   const [requests, setRequests] = useState<FoodRequest[]>([]);
 
-  // Load all requests from requests.json
+  // Load all requests from the back end
   useEffect(() => {
     const token = localStorage.getItem('token') || '';
-    fetch('/api/requests', {
-      headers: { 'Authorization': `Bearer ${token}` }
+    fetch(`${API_BASE}/api/requests`, {
+      headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => {
         if (!res.ok) throw new Error(res.statusText);
@@ -69,7 +74,7 @@ export default function FoodRequest() {
     );
 
     // Persist change
-    fetch(`/api/requests/${id}/status`, {
+    fetch(`${API_BASE}/api/requests/${encodeURIComponent(id)}/status`, {
       method: 'POST',
       headers: {
         'Content-Type':  'application/json',
