@@ -1,0 +1,32 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  role         Role
+  ngoName      String?   // for NGOs
+  gstNumber    String?   // ✅ for restaurants
+  restaurantName String? // ✅ Add this line for restaurants
+  aadharNumber String?   // for NGOs
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+
+
+enum Role {
+  NGO
+  RESTAURANT
+  ADMIN
+}
+
+
+

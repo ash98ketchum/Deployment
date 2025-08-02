@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Aloo Paratha",
+    "description": "Made 23 servings, Wasted 2, Cost per plate 28",
+    "quantity": "23 servings",
+    "pickupStartTime": "22:22",
+    "pickupEndTime": "23:59",
+    "estimatedValue": "274.83",
+    "dietaryTags": [
+      "Fresh"
+    ],
+    "image": "",
+    "expiryTime": "2025-07-25T23:59:00",
+    "id": "1753462345425",
+    "status": "available",
+    "createdAt": "2025-07-25T16:52:25.425Z"
+  },
+  {
+    "name": "Masala Dosa",
+    "description": "Made 35 servings, Wasted 5, Cost per plate 15",
+    "quantity": "35 servings",
+    "pickupStartTime": "22:22",
+    "pickupEndTime": "23:59",
+    "estimatedValue": "192.86",
+    "dietaryTags": [
+      "Fresh"
+    ],
+    "image": "",
+    "expiryTime": "2025-07-25T23:59:00",
+    "id": "1753462345435",
+    "status": "available",
+    "createdAt": "2025-07-25T16:52:25.435Z"
+  }
+]

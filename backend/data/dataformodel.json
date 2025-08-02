@@ -1,0 +1,272 @@
+[
+  {
+    "date": "2025-06-10",
+    "items": [
+      {
+        "name": "Rajma Chawal",
+        "costPerPlate": 12,
+        "totalIngredientsCost": 100,
+        "totalPlates": 20,
+        "platesWasted": 2,
+        "totalEarning": 126
+      },
+      {
+        "name": "Biryani",
+        "costPerPlate": 10,
+        "totalIngredientsCost": 80,
+        "totalPlates": 25,
+        "platesWasted": 1,
+        "totalEarning": 163.2
+      }
+    ]
+  },
+  {
+    "date": "2025-06-14",
+    "items": []
+  },
+  {
+    "date": "2025-06-15",
+    "items": []
+  },
+  {
+    "date": "2025-06-17",
+    "items": [
+      {
+        "id": "1750186787194",
+        "date": "2025-06-17",
+        "name": "Kadhi Chawal",
+        "costPerPlate": 150,
+        "totalIngredientsCost": 60,
+        "totalPlates": 30,
+        "platesWasted": 10,
+        "totalEarning": 2960,
+        "remark": "tasty"
+      },
+      {
+        "id": "1750187300371",
+        "date": "2025-06-17",
+        "name": "Lassi",
+        "costPerPlate": 55,
+        "totalIngredientsCost": 80,
+        "totalPlates": 12,
+        "platesWasted": 4,
+        "totalEarning": 386.67,
+        "remark": "Very sweet"
+      }
+    ]
+  },
+  {
+    "date": "2025-06-19",
+    "items": [
+      {
+        "id": "1750186787194",
+        "date": "2025-06-17",
+        "name": "Kadhi Chawal",
+        "costPerPlate": 150,
+        "totalIngredientsCost": 60,
+        "totalPlates": 30,
+        "platesWasted": 10,
+        "totalEarning": 2960,
+        "remark": "tasty"
+      },
+      {
+        "id": "1750187300371",
+        "date": "2025-06-17",
+        "name": "Lassi",
+        "costPerPlate": 55,
+        "totalIngredientsCost": 80,
+        "totalPlates": 12,
+        "platesWasted": 4,
+        "totalEarning": 386.67,
+        "remark": "Very sweet"
+      },
+      {
+        "id": "1750322750474",
+        "date": "2025-06-19",
+        "name": "Samosa",
+        "costPerPlate": 15,
+        "totalIngredientsCost": 500,
+        "totalPlates": 45,
+        "platesWasted": 3,
+        "totalEarning": 163.33,
+        "remark": "khathi meethi "
+      },
+      {
+        "id": "1750326861388",
+        "date": "2025-06-19",
+        "name": "Samosa",
+        "costPerPlate": 45,
+        "totalIngredientsCost": 500,
+        "totalPlates": 45,
+        "platesWasted": 3,
+        "totalEarning": 1423.33,
+        "remark": "khatta meetha"
+      }
+    ]
+  },
+  {
+    "date": "2025-07-16",
+    "items": [
+      {
+        "id": "1750186787194",
+        "date": "2025-06-17",
+        "name": "Kadhi Chawal",
+        "costPerPlate": 150,
+        "totalIngredientsCost": 60,
+        "totalPlates": 30,
+        "platesWasted": 10,
+        "totalEarning": 2960,
+        "remark": "tasty"
+      },
+      {
+        "id": "1750187300371",
+        "date": "2025-06-17",
+        "name": "Lassi",
+        "costPerPlate": 55,
+        "totalIngredientsCost": 80,
+        "totalPlates": 12,
+        "platesWasted": 4,
+        "totalEarning": 386.67,
+        "remark": "Very sweet"
+      },
+      {
+        "id": "1750322750474",
+        "date": "2025-06-19",
+        "name": "Samosa",
+        "costPerPlate": 15,
+        "totalIngredientsCost": 500,
+        "totalPlates": 45,
+        "platesWasted": 3,
+        "totalEarning": 163.33,
+        "remark": "khathi meethi "
+      },
+      {
+        "id": "1752678390804",
+        "date": "2025-07-16",
+        "name": "Fish Curry",
+        "costPerPlate": 10,
+        "totalIngredientsCost": 300,
+        "totalPlates": 38,
+        "platesWasted": 2,
+        "totalEarning": 75.79
+      },
+      {
+        "id": "1752678417003",
+        "date": "2025-07-16",
+        "name": "Egg Curry",
+        "costPerPlate": 5,
+        "totalIngredientsCost": 40,
+        "totalPlates": 20,
+        "platesWasted": 1,
+        "totalEarning": 57
+      },
+      {
+        "id": "1752678454297",
+        "date": "2025-07-16",
+        "name": "Egg Fried Rice",
+        "costPerPlate": 20,
+        "totalIngredientsCost": 400,
+        "totalPlates": 30,
+        "platesWasted": 4,
+        "totalEarning": 173.33
+      }
+    ]
+  },
+  {
+    "date": "2025-07-17",
+    "items": [
+      {
+        "id": "1750186787194",
+        "date": "2025-06-17",
+        "name": "Kadhi Chawal",
+        "costPerPlate": 150,
+        "totalIngredientsCost": 60,
+        "totalPlates": 30,
+        "platesWasted": 10,
+        "totalEarning": 2960,
+        "remark": "tasty"
+      },
+      {
+        "id": "1750187300371",
+        "date": "2025-06-17",
+        "name": "Lassi",
+        "costPerPlate": 55,
+        "totalIngredientsCost": 80,
+        "totalPlates": 12,
+        "platesWasted": 4,
+        "totalEarning": 386.67,
+        "remark": "Very sweet"
+      },
+      {
+        "id": "1750322750474",
+        "date": "2025-06-19",
+        "name": "Samosa",
+        "costPerPlate": 15,
+        "totalIngredientsCost": 500,
+        "totalPlates": 45,
+        "platesWasted": 3,
+        "totalEarning": 163.33,
+        "remark": "khathi meethi "
+      },
+      {
+        "id": "1752678390804",
+        "date": "2025-07-16",
+        "name": "Fish Curry",
+        "costPerPlate": 10,
+        "totalIngredientsCost": 300,
+        "totalPlates": 38,
+        "platesWasted": 2,
+        "totalEarning": 75.79
+      },
+      {
+        "id": "1752678417003",
+        "date": "2025-07-16",
+        "name": "Egg Curry",
+        "costPerPlate": 5,
+        "totalIngredientsCost": 40,
+        "totalPlates": 20,
+        "platesWasted": 1,
+        "totalEarning": 57
+      },
+      {
+        "id": "1752678454297",
+        "date": "2025-07-16",
+        "name": "Egg Fried Rice",
+        "costPerPlate": 20,
+        "totalIngredientsCost": 400,
+        "totalPlates": 30,
+        "platesWasted": 4,
+        "totalEarning": 173.33
+      }
+    ]
+  },
+  {
+    "date": "2025-07-25",
+    "items": [
+      {
+        "id": "1753459039001",
+        "date": "2025-07-25",
+        "name": "Aloo Paratha",
+        "costPerPlate": 28,
+        "totalIngredientsCost": 343,
+        "totalPlates": 23,
+        "platesWasted": 2,
+        "totalEarning": 274.83
+      },
+      {
+        "id": "1753459628262",
+        "date": "2025-07-25",
+        "name": "Masala Dosa",
+        "costPerPlate": 15,
+        "totalIngredientsCost": 300,
+        "totalPlates": 35,
+        "platesWasted": 5,
+        "totalEarning": 192.86
+      }
+    ]
+  },
+  {
+    "date": "2025-08-01",
+    "items": []
+  }
+]

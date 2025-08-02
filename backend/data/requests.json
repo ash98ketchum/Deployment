@@ -1,0 +1,47 @@
+[
+  {
+    "id": "1750276968742",
+    "name": "Cheese",
+    "quantity": "100",
+    "estimatedValue": "69420",
+    "pickupStartTime": "00:00",
+    "pickupEndTime": "10:00",
+    "status": "accepted"
+  },
+  {
+    "id": "1750301352702",
+    "name": "khadi chawal",
+    "quantity": "1",
+    "estimatedValue": "150",
+    "pickupStartTime": "08:00",
+    "pickupEndTime": "12:00",
+    "status": "accepted"
+  },
+  {
+    "id": "1750325629315",
+    "name": "aalo ki sabzi",
+    "quantity": "100",
+    "estimatedValue": "10000",
+    "pickupStartTime": "15:00",
+    "pickupEndTime": "20:00",
+    "status": "accepted"
+  },
+  {
+    "id": "1750333607939",
+    "name": "daal chawal",
+    "quantity": "200",
+    "estimatedValue": "93",
+    "pickupStartTime": "14:03",
+    "pickupEndTime": "20:00",
+    "status": "rejected"
+  },
+  {
+    "id": "1752679030290",
+    "name": "matar paneer",
+    "quantity": "80",
+    "estimatedValue": "197",
+    "pickupStartTime": "06:50",
+    "pickupEndTime": "23:50",
+    "status": "booked"
+  }
+]
