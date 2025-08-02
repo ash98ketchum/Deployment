@@ -23,13 +23,21 @@ const { PrismaClient }= require('@prisma/client');
 const Groq            = require('groq-sdk');
 
 // ── App Configuration ─────────────────────────────────────────────────────────
-const prisma      = new PrismaClient();
-const app         = express();
-const PORT        = process.env.PORT || 4000;
-const JWT_SECRET  = process.env.JWT_SECRET;
-const PYTHON_CMD  = process.env.PYTHON_CMD || 'python3';
-const groqClient  = new Groq({ apiKey: process.env.GROQ_API_KEY });
-const FRONTEND_URL = process.env.FRONTEND_URL || '*';
+const prisma       = new PrismaClient();
+const app          = express();
+const PORT         = process.env.PORT || 4000;
+const JWT_SECRET   = process.env.JWT_SECRET;
+const PYTHON_CMD   = process.env.PYTHON_CMD || 'python3';
+const groqClient   = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const FRONTEND_URL = process.env.FRONTEND_URL;
+
+// ── CORS (preflight + actual) ────────────────────────────────────────────────
+app.options('*', cors({
+  origin: FRONTEND_URL,
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
+  credentials: true
+}));
 app.use(cors({
   origin: FRONTEND_URL,
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
@@ -37,16 +45,16 @@ app.use(cors({
   credentials: true
 }));
 
-// ── Core middleware ─────────────────────────────────────────────────────
+// ── Core middleware ───────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
+
 // ── Data Directories & File Map ───────────────────────────────────────────────
 const DATA_DIR          = path.join(__dirname, 'data');
 const FRONTEND_DATA_DIR = path.join(__dirname, '..', 'frontend', 'public', 'data');
 for (const d of [DATA_DIR, FRONTEND_DATA_DIR]) {
   if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });
 }
-
 const FILES = {
   today:           'todaysserving.json',
   modelData:       'dataformodel.json',
@@ -89,14 +97,6 @@ function readSummary(key) {
   return readJson(dataPath(key), {});
 }
 
-// ── Middleware ───────────────────────────────────────────────────────────────
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
-app.use(cors({
-  origin: FRONTEND_URL,
-  allowedHeaders: ['Content-Type','Authorization']
-}));
-
 // ── Auth Helpers ─────────────────────────────────────────────────────────────
 function requireAuth(req, res, next) {
   const auth = req.headers.authorization;
@@ -112,7 +112,6 @@ function requireAuth(req, res, next) {
 // ── Async Error Wrapper & Global Handler ──────────────────────────────────────
 const wrap = fn => (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch(next);
-
 app.use((err, req, res, next) => {
   console.error(err);
   if (res.headersSent) return next(err);
@@ -131,7 +130,8 @@ app.post('/api/v1/auth/signup', wrap(async (req, res) => {
     });
     res.json({ id: user.id, email: user.email, role: user.role });
   } catch (e) {
-    if (e.code === 'P2002') return res.status(409).json({ error: 'Email already in use' });
+    if (e.code === 'P2002')
+      return res.status(409).json({ error: 'Email already in use' });
     throw e;
   }
 }));
@@ -141,7 +141,11 @@ app.post('/api/v1/auth/login', wrap(async (req, res) => {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user || !(await bcrypt.compare(password, user.passwordHash)))
     return res.status(401).json({ error: 'Invalid credentials' });
-  const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, { expiresIn: '2h' });
+  const token = jwt.sign(
+    { userId: user.id, role: user.role },
+    JWT_SECRET,
+    { expiresIn: '2h' }
+  );
   res.json({ token });
 }));
 
@@ -188,28 +192,26 @@ app.get('/api/stats/users', requireAuth, wrap(async (req, res) => {
   res.json({ ngos: ngoCount, restaurants: restaurantCount, mealsDonated, foodSaved });
 }));
 
-app.get('/api/stats/dashboard', requireAuth, wrap((req, res) => {
-  const activePartners     = prisma.user.count({ where: { role: 'RESTAURANT' } });
+app.get('/api/stats/dashboard', requireAuth, wrap(async (req, res) => {
+  const activePartners     = await prisma.user.count({ where: { role: 'RESTAURANT' } });
   const allReqs            = readJson(dataPath('requests'), []);
   const upcomingPickups    = allReqs.filter(r => r.status === 'pending').length;
   const requestsFulfilled  = allReqs.filter(r => r.status === 'accepted').length;
   const totalFoodSaved     = allReqs
     .filter(r => r.status === 'accepted')
     .reduce((sum, r) => sum + (r.quantity ? parseInt(r.quantity,10) : 0), 0);
-  Promise.resolve(activePartners).then(count =>
-    res.json({ activePartners: count, upcomingPickups, requestsFulfilled, totalFoodSaved })
-  );
+  res.json({ activePartners, upcomingPickups, requestsFulfilled, totalFoodSaved });
 }));
 
-// ── Time-Series Helpers ─────────────────────────────────────────────────────
+// ── Time-Series Helper ───────────────────────────────────────────────────────
 function getSeries(period) {
   const all = readJson(dataPath('modelData'));
   all.sort((a,b) => new Date(a.date) - new Date(b.date));
   const days = period === 'monthly' ? 30 : 7;
   return all.slice(-days).map(day => ({
-    date:          day.date,
-    actual:        day.items.reduce((s,i)=>s+(i.totalPlates||0),0),
-    actualEarning: parseFloat(day.items.reduce((s,i)=>s+(i.totalEarning||0),0).toFixed(2))
+    date:           day.date,
+    actual:         day.items.reduce((s,i)=>s+(i.totalPlates||0),0),
+    actualEarning:  parseFloat(day.items.reduce((s,i)=>s+(i.totalEarning||0),0).toFixed(2))
   }));
 }
 
@@ -225,7 +227,7 @@ app.get('/api/predicted/:period', requireAuth, wrap((req, res) => {
   const p = req.params.period;
   if (!['weekly','monthly'].includes(p))
     return res.status(400).json({ error: 'Invalid period' });
-  const series = getSeries(p).map(d => ({
+  const series  = getSeries(p).map(d => ({
     date:            d.date,
     predicted:       d.actual,
     predictedEarning:d.actualEarning
@@ -248,17 +250,20 @@ app.get('/api/metrics/monthly', requireAuth, wrap((req, res) => {
 
 // ── Servings Endpoints ───────────────────────────────────────────────────────
 app.get('/api/servings', requireAuth, wrap((req, res) => {
-  let all     = readJson(dataPath('today'), []);
-  const today = new Date().toISOString().split('T')[0];
-  all = all.map(s => {
+  const all      = readJson(dataPath('today'), []);
+  const todayStr = new Date().toISOString().split('T')[0];
+  let filtered   = all.filter(s => s.date === todayStr);
+  let needsSave  = false;
+  filtered = filtered.map(s => {
     if (!s.id) {
       s.id = Date.now().toString() + Math.random().toString(36).slice(2,6);
+      needsSave = true;
     }
     return s;
   });
-  writeJson(dataPath('today'), all);
-  writeJson(publicPath('today'), all);
-  res.json(all.filter(s => s.date === today));
+  if (needsSave) writeJson(dataPath('today'), filtered);
+  writeJson(publicPath('today'), filtered);
+  res.json(filtered);
 }));
 
 app.post('/api/servings', requireAuth, wrap((req, res) => {
@@ -271,7 +276,7 @@ app.post('/api/servings', requireAuth, wrap((req, res) => {
 }));
 
 app.delete('/api/servings/:id', requireAuth, wrap((req, res) => {
-  const all = readJson(dataPath('today'), []);
+  const all      = readJson(dataPath('today'), []);
   const filtered = all.filter(s => s.id !== req.params.id);
   syncJson('today', filtered);
   res.json({ message: 'Deleted' });
@@ -348,7 +353,7 @@ app.post('/api/reserve-food', requireAuth, wrap((req, res) => {
   res.json({ success: true });
 }));
 
-// ── Cart & Requests ─────────────────────────────────────────────────────────
+// ── Cart & Requests ──────────────────────────────────────────────────────────
 app.post('/api/save-cart', requireAuth, wrap((req, res) => {
   const { items } = req.body;
   if (!Array.isArray(items)) return res.status(400).json({ error: 'Invalid payload' });
@@ -520,6 +525,7 @@ app.get('/api/restaurants', requireAuth, wrap(async (req, res) => {
     joinedDate:     r.createdAt.toISOString(),
     address:        '',
     phone:          '',
+
     cuisine:        '',
     status:         'Active',
     lastPickup:     '-',
@@ -561,8 +567,6 @@ app.post('/api/chat', requireAuth, wrap(async (req, res) => {
 app.use('/data', express.static(FRONTEND_DATA_DIR));
 const FRONTEND_BUILD = path.join(__dirname, '../frontend/dist');
 app.use(express.static(FRONTEND_BUILD));
-
-// Only serve index.html for non-API routes
 app.get(/^\/(?!api).*/, (req, res) => {
   res.sendFile(path.join(FRONTEND_BUILD, 'index.html'));
 });
