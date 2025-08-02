@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "main": "server.cjs",
   "scripts": {
-    "start": "node server.cjs"
+    "start": "node server.cjs",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy"
   },
   "dependencies": {
-    "@prisma/client": "^6.9.0",
+    "@prisma/client": "^6.13.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
@@ -21,6 +23,6 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "prisma": "^6.9.0"
+    "prisma": "^6.13.0"
   }
 }
